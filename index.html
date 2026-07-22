@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Cover Page Generator</title>
+  <meta name="description"
+    content="Generate high-quality academic assignment cover pages formatted perfectly for Sylhet Agricultural University and other institutions.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome Icons for UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- HTML2Canvas CDN for PNG export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="theme-dark">
+
+  <!-- Top App Navigation Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div class="brand-text">
+        <h1>CoverPage <span>Maker</span></h1>
+        <p>Assignment & Report Cover Page Generator</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions Toolbar -->
+    <div class="header-actions">
+      <!-- Preset Dropdown -->
+      <div class="preset-selector">
+        <label for="presetSelect"><i class="fa-solid fa-bookmark"></i> Preset:</label>
+        <select id="presetSelect" aria-label="Select University Cover Page Preset">
+          <option value="sau">Sylhet Agricultural University (SAU)</option>
+          <option value="buet">BUET Standard Template</option>
+          <option value="du">Dhaka University (DU)</option>
+          <option value="sust">SUST Template</option>
+          <option value="custom">Custom Generic Template</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <button id="btnPrint" class="btn btn-primary" title="Export as PDF using browser print">
+        <i class="fa-solid fa-file-pdf"></i> Download PDF / Print
+      </button>
+      <button id="btnDownloadPng" class="btn btn-secondary" title="Save cover page as image">
+        <i class="fa-solid fa-file-image"></i> Export PNG
+      </button>
+      <button id="btnReset" class="btn btn-ghost" title="Reset to initial default demo data">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+      </button>
+      <button id="btnThemeToggle" class="btn btn-icon" title="Toggle UI Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Layout -->
+  <main class="app-container">
+    <!-- Left Sidebar: Controls & Form Inputs -->
+    <aside class="sidebar-panel">
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="header-tab">
+          <i class="fa-solid fa-building-columns"></i> Institution
+        </button>
+        <button class="tab-btn" data-tab="assignment-tab">
+          <i class="fa-solid fa-book-open"></i> Topic & Course
+        </button>
+        <button class="tab-btn" data-tab="people-tab">
+          <i class="fa-solid fa-users"></i> Students & Teachers
+        </button>
+        <button class="tab-btn" data-tab="style-tab">
+          <i class="fa-solid fa-palette"></i> Style & Layout
+        </button>
+      </nav>
+
+      <div class="tab-content-container">
+        <!-- Tab 1: Institution & Header -->
+        <div class="tab-pane active" id="header-tab">
+          <div class="section-card">
+            <h3><i class="fa-solid fa-university"></i> University / Institution Info</h3>
+
+            <div class="form-group">
+              <label for="universityName">University Name</label>
+              <textarea id="universityName" rows="2"
+                placeholder="e.g. SYLHET AGRICULTURAL UNIVERSITY">SYLHET AGRICULTURAL UNIVERSITY</textarea>
+              <span class="help-text">Upper case serif styling recommended</span>
+            </div>
+
+            <div class="form-group">
+              <label for="institutionSubtitle">Location / Subtitle Text</label>
+
+              <div class="input-with-color">
+                <input type="text" id="institutionSubtitle" value="Sylhet-3100" placeholder="e.g. Sylhet-3100">
+                <input type="color" id="subtitleColor" value="#008000" title="Choose subtitle color">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label><i class="fa-solid fa-image"></i> Institution Logo</label>
+              <div class="logo-upload-box" id="logoDropZone">
+                <img id="logoPreview" src="StAU_logo_main.jpeg" alt="University Logo">
+                <div class="upload-controls">
+                  <label for="logoFileInput" class="btn btn-sm btn-secondary">
+                    <i class="fa-solid fa-upload"></i> Upload Logo
+                  </label>
+                  <input type="file" id="logoFileInput" accept="image/*" class="hidden-input">
+                  <button type="button" id="btnRemoveLogo" class="btn btn-sm btn-danger-outline">
+                    <i class="fa-solid fa-trash"></i> Remove
+                  </button>
+                  <button type="button" id="btnRestoreSauLogo" class="btn btn-sm btn-ghost">
+                    <i class="fa-solid fa-rotate"></i> SAU Logo
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="logoSize">Logo Size (<span id="logoSizeVal">100</span>px)</label>
+              <input type="range" id="logoSize" min="40" max="220" value="100">
+            </div>
+
+            <div class="form-group checkbox-group">
+              <input type="checkbox" id="showDivider" checked>
+              <label for="showDivider">Show Horizontal Divider Line</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Assignment & Course Info -->
+        <div class="tab-pane" id="assignment-tab">
+          <div class="section-card">
+            <h3><i class="fa-solid fa-file-signature"></i> Assignment Metadata</h3>
+
+            <div class="form-group">
+              <label for="documentPrefix">Header Prefix Title</label>
+              <input type="text" id="documentPrefix" value="Assignment on"
+                placeholder="e.g. Assignment on, Lab Report on">
+            </div>
+
+            <div class="form-group">
+              <label for="assignmentTitle">Assignment Topic / Main Title</label>
+              <textarea id="assignmentTitle" rows="2"
+                placeholder="e.g. Single Cell Protein">Single Cell Protein</textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courseTitle">Course Title</label>
+                <input type="text" id="courseTitle" value="Food and Beverage Biotechnology (Theory)"
+                  placeholder="Course name">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courseCode">Course Code</label>
+                <input type="text" id="courseCode" value="PIB-311(T)" placeholder="Course code">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: People (Submitted By / Submitted To) -->
+        <div class="tab-pane" id="people-tab">
+          <div class="section-card">
+            <div class="section-header-row">
+              <h3><i class="fa-solid fa-user-graduate"></i> Submitted By (Student)</h3>
+              <input type="text" id="submittedByHeader" value="Submitted By" class="header-rename-input">
+            </div>
+
+            <div id="submittedByList" class="dynamic-field-list">
+              <!-- Dynamic list items added via JS -->
+            </div>
+            <button type="button" id="btnAddSubmittedBy" class="btn btn-sm btn-ghost add-line-btn">
+              <i class="fa-solid fa-plus"></i> Add Field Line
+            </button>
+          </div>
+
+          <div class="section-card margin-top">
+            <div class="section-header-row">
+              <h3><i class="fa-solid fa-chalkboard-user"></i> Submitted To (Teacher)</h3>
+              <input type="text" id="submittedToHeader" value="Submitted To" class="header-rename-input">
+            </div>
+
+            <div id="submittedToList" class="dynamic-field-list">
+              <!-- Dynamic list items added via JS -->
+            </div>
+            <button type="button" id="btnAddSubmittedTo" class="btn btn-sm btn-ghost add-line-btn">
+              <i class="fa-solid fa-plus"></i> Add Field Line
+            </button>
+          </div>
+
+          <div class="section-card margin-top">
+            <h3><i class="fa-regular fa-calendar-check"></i> Date of Submission</h3>
+            <div class="form-group">
+              <div class="input-with-btn">
+                <input type="text" id="submissionDate" value="22 July 2026" placeholder="e.g. 22 July 2026">
+                <button type="button" id="btnSetToday" class="btn btn-sm btn-secondary" title="Set to Today's Date">
+                  Today
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Styling & Layout -->
+        <div class="tab-pane" id="style-tab">
+          <div class="section-card">
+            <h3><i class="fa-solid fa-sliders"></i> Visual Styling</h3>
+
+            <!-- Quick Preset Color Swatches -->
+            <div class="form-group">
+              <label>Header Accent Color</label>
+              <div class="color-swatches">
+                <button class="swatch active" data-color="#0c542c" style="background-color: #0c542c;"
+                  title="SAU Green"></button>
+                <button class="swatch" data-color="#006a4e" style="background-color: #006a4e;"
+                  title="Bangladesh Green"></button>
+                <button class="swatch" data-color="#0a3925" style="background-color: #0a3925;"
+                  title="Forest Dark"></button>
+                <button class="swatch" data-color="#0f4c81" style="background-color: #0f4c81;"
+                  title="Navy Blue"></button>
+                <button class="swatch" data-color="#8b0000" style="background-color: #8b0000;"
+                  title="Deep Crimson"></button>
+                <button class="swatch" data-color="#1f2937" style="background-color: #1f2937;"
+                  title="Charcoal Black"></button>
+              </div>
+              <div class="custom-color-picker">
+                <label for="tableHeaderBgColor">Custom Color:</label>
+                <input type="color" id="tableHeaderBgColor" value="#0c542c">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fontFamilySelect">Cover Page Font Family</label>
+              <select id="fontFamilySelect">
+                <option value="'EB Garamond', Georgia, serif">EB Garamond (Classic Academic Serif)</option>
+                <option value="Georgia, serif">Georgia (Standard Serif)</option>
+                <option value="'Times New Roman', Times, serif">Times New Roman (Traditional)</option>
+                <option value="'Merriweather', serif">Merriweather (Bold Modern Serif)</option>
+                <option value="'Playfair Display', serif">Playfair Display (Elegant High Contrast)</option>
+                <option value="'Cinzel', serif">Cinzel (Formal Classic Uppercase)</option>
+                <option value="'Inter', sans-serif">Inter (Modern Clean Sans)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="paperMargin">Paper Margins (<span id="paperMarginVal">25</span>mm)</label>
+              <input type="range" id="paperMargin" min="15" max="40" value="25">
+            </div>
+
+            <div class="form-group">
+              <label for="tableBorderWidth">Table Border Thickness (<span id="tableBorderVal">2</span>px)</label>
+              <input type="range" id="tableBorderWidth" min="1" max="4" value="2">
+            </div>
+
+            <div class="form-group checkbox-group">
+              <input type="checkbox" id="showPageBorder" checked>
+              <label for="showPageBorder">Show Outer Page Frame Border</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Stage: Live Interactive Paper Canvas Preview -->
+    <section class="preview-stage">
+      <!-- Viewport Toolbar -->
+      <div class="stage-toolbar">
+        <div class="toolbar-info">
+          <span class="status-indicator"><i class="fa-solid fa-eye"></i> Live Preview (A4 Standard)</span>
+        </div>
+
+        <div class="zoom-controls">
+          <button id="btnZoomOut" class="btn-tool" title="Zoom Out"><i
+              class="fa-solid fa-magnifying-glass-minus"></i></button>
+          <span id="zoomLevelText">100%</span>
+          <button id="btnZoomIn" class="btn-tool" title="Zoom In"><i
+              class="fa-solid fa-magnifying-glass-plus"></i></button>
+          <button id="btnZoomFit" class="btn-tool" title="Fit to Viewport"><i class="fa-solid fa-expand"></i></button>
+        </div>
+      </div>
+
+      <!-- Scrollable Stage Container -->
+      <div class="stage-viewport" id="stageViewport">
+        <!-- The A4 Sheet container matching print dimensions (210mm x 297mm) -->
+        <div class="a4-sheet" id="coverPagePaper">
+          <div class="cover-content-inner" id="coverInner">
+
+            <!-- 1. Top Header: Institution Name & Logo -->
+            <header class="cover-header">
+              <h1 id="viewUniversityName" class="univ-title">SYLHET AGRICULTURAL UNIVERSITY</h1>
+
+              <div id="viewLogoWrapper" class="logo-wrapper">
+                <img id="viewLogo" src="sau_logo.svg" alt="University Logo">
+              </div>
+
+              <div id="viewSubtitle" class="univ-subtitle">Sylhet-3100</div>
+
+              <hr id="viewDivider" class="cover-divider">
+            </header>
+
+            <!-- 2. Document Title Section -->
+            <section class="cover-title-section">
+              <div id="viewDocPrefix" class="doc-prefix">Assignment on</div>
+              <h2 id="viewTopicTitle" class="topic-title">Single Cell Protein</h2>
+            </section>
+
+            <!-- 3. Course Metadata Section -->
+            <section class="cover-course-section">
+              <p class="course-line">
+                <strong class="label">Course Title:</strong> <span id="viewCourseTitle">Food and Beverage Biotechnology
+                  (Theory)</span>
+              </p>
+              <p class="course-line">
+                <strong class="label">Course Code:</strong> <span id="viewCourseCode">PIB-311(T)</span>
+              </p>
+            </section>
+
+            <!-- 4. Two-Column Table Section (Submitted By / Submitted To) -->
+            <section class="cover-people-section">
+              <table id="viewPeopleTable" class="people-table">
+                <thead>
+                  <tr>
+                    <th id="viewHeaderSubmittedBy" class="col-submitted-by">Submitted By</th>
+                    <th id="viewHeaderSubmittedTo" class="col-submitted-to">Submitted To</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <!-- Submitted By Cell -->
+                    <td id="viewCellSubmittedBy" class="cell-submitted-by">
+                      <!-- Dynamic lines rendered by JS -->
+                    </td>
+
+                    <!-- Submitted To Cell -->
+                    <td id="viewCellSubmittedTo" class="cell-submitted-to">
+                      <!-- Dynamic lines rendered by JS -->
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <!-- 5. Footer: Submission Date -->
+            <footer class="cover-footer">
+              <p id="viewSubmissionDate" class="submission-date-line">
+                Date of Submission: 22 July 2026
+              </p>
+            </footer>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
